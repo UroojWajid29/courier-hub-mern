@@ -41,3 +41,52 @@ export const getMe = async (req, res, next) => {
     res.json({ success: true, user })
   } catch (err) { next(err) }
 }
+
+// @POST /api/auth/forgot-password/verify
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if (!user) return res.status(404).json({ success: false, message: 'No account found with this email.' })
+    res.json({ success: true, message: 'Email found.' })
+  } catch (err) { next(err) }
+}
+
+// @POST /api/auth/forgot-password/reset
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { email, newPassword } = req.body
+    const user = await User.findOne({ email })
+    if (!user) return res.status(404).json({ success: false, message: 'No account found with this email.' })
+    user.password = newPassword
+    await user.save()
+    res.json({ success: true, message: 'Password reset successfully!' })
+  } catch (err) { next(err) }
+}
+
+// @PUT /api/auth/profile
+export const updateProfile = async (req, res, next) => {
+  try {
+    const { name, phone, company } = req.body
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { name, phone, company },
+      { new: true, runValidators: true }
+    )
+    res.json({ success: true, message: 'Profile updated.', user })
+  } catch (err) { next(err) }
+}
+
+// @PUT /api/auth/change-password
+export const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+    const user = await User.findById(req.user._id).select('+password')
+    if (!(await user.comparePassword(currentPassword))) {
+      return res.status(400).json({ success: false, message: 'Current password is incorrect.' })
+    }
+    user.password = newPassword
+    await user.save()
+    res.json({ success: true, message: 'Password changed successfully!' })
+  } catch (err) { next(err) }
+}
