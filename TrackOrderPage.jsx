@@ -133,7 +133,7 @@ export default function TrackOrderPage() {
             <a
               href={result.order.courier === 'tcs' ? `https://www.tcsexpress.com/track/?tn=${result.order.trackingNumber}` :
                 result.order.courier === 'leopards' ? `https://www.leopardscourier.com/leopards-courier/track-your-packet/?track_no=${result.order.trackingNumber}` :
-                `https://mulphilog.com.pk/track-shipment.php?tracking=${result.order.trackingNumber}`}
+                `https://www.mulphypackage.com/track?tracking=${result.order.trackingNumber}`}
               target="_blank" rel="noopener noreferrer"
               className="btn-secondary text-sm py-1.5 px-3"
             >

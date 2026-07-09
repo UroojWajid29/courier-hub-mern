@@ -16,7 +16,6 @@ export default function LoginPage() {
       const data = await login(form.email, form.password)
       if (data.success) {
         toast.success(`Welcome back, ${data.user.name}!`)
-        // Redirect based on role
         navigate(data.user.role === 'admin' ? '/admin' : '/')
       }
     } catch (err) {
@@ -48,13 +47,17 @@ export default function LoginPage() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <input type="password" className="input" placeholder="••••••••"
                 value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} required />
+              <div className="text-right mt-1">
+                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700">
+                  Forgot password?
+                </Link>
+              </div>
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full py-3">
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          {/* Role hint */}
           <div className="mt-4 p-3 bg-gray-50 rounded-lg text-xs text-gray-500 text-center">
             Admins and Users use the same login — you'll be redirected based on your role
           </div>
